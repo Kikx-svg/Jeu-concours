@@ -13,13 +13,13 @@ body {
   color: white;
 }
 
-/* CONTENEUR */
+/* CONTAINER */
 .container {
   padding: 20px;
   text-align: center;
 }
 
-/* CARTE */
+/* CARD */
 .card {
   max-width: 420px;
   margin: auto;
@@ -37,7 +37,7 @@ img.main {
   margin-bottom: 20px;
 }
 
-/* TEXTE */
+/* TEXT */
 h1, h2 {
   margin-bottom: 10px;
 }
@@ -46,7 +46,7 @@ p {
   color: #e0f2fe;
 }
 
-/* BOUTON */
+/* BUTTON */
 .btn {
   background: linear-gradient(135deg, #06b6d4, #2563eb);
   border: none;
@@ -68,23 +68,29 @@ input {
   border: none;
 }
 
-/* RADIO MOBILE FIX */
-.radio-group {
+/* CIVILITE FIX MOBILE */
+.civilite {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 15px;
   margin: 20px 0;
 }
 
-.radio-group label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.civilite button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 20px;
+  border: 2px solid rgba(255,255,255,0.4);
+  background: transparent;
+  color: white;
   font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.radio-group input {
-  transform: scale(1.4);
+.civilite button.active {
+  background: linear-gradient(135deg, #06b6d4, #2563eb);
+  border: none;
 }
 
 /* HIDDEN */
@@ -119,10 +125,10 @@ input {
 
   <form id="contestForm">
 
-    <!-- RADIO FIX -->
-    <div class="radio-group">
-      <label><input type="radio" name="civilite" value="Mr" required> Mr</label>
-      <label><input type="radio" name="civilite" value="Mme"> Mme</label>
+    <!-- CIVILITE -->
+    <div class="civilite">
+      <button type="button" onclick="setCivilite(this, 'Mr')">Mr</button>
+      <button type="button" onclick="setCivilite(this, 'Mme')">Mme</button>
     </div>
 
     <input type="text" id="nom" placeholder="Nom" required>
@@ -147,15 +153,29 @@ input {
 </div>
 
 <script>
+let civilite = "";
+
+/* SELECT CIVILITE */
+function setCivilite(el, value) {
+  civilite = value;
+
+  document.querySelectorAll(".civilite button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  el.classList.add("active");
+}
+
+/* NAVIGATION */
 function showForm() {
   document.getElementById("step1").classList.add("hidden");
   document.getElementById("step2").classList.remove("hidden");
 }
 
+/* SUBMIT */
 document.getElementById("contestForm").addEventListener("submit", function(e) {
   e.preventDefault();
 
-  const civilite = document.querySelector('input[name="civilite"]:checked')?.value;
   const nom = document.getElementById("nom").value;
   const prenom = document.getElementById("prenom").value;
   const email = document.getElementById("email").value.toLowerCase();
