@@ -34,7 +34,6 @@ img.main {
   margin-bottom: 20px;
 }
 
-/* DATE + TIMER */
 .date {
   font-size: 14px;
   color: #bae6fd;
@@ -68,24 +67,29 @@ input {
   margin-top: 20px;
 }
 
-/* CIVILITE FIX MOBILE */
+/* CIVILITE */
 .civilite {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 15px;
   margin: 20px 0;
 }
 
-.civilite label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.civ-btn {
+  padding: 10px 25px;
+  border-radius: 30px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  font-weight: bold;
   font-size: 16px;
+  transition: 0.3s;
 }
 
-.civilite input {
-  width: 18px;
-  height: 18px;
+.civ-btn.active {
+  background: white;
+  color: #1e3a8a;
+  box-shadow: 0 0 15px rgba(255,255,255,0.8);
 }
 
 /* FOOTER */
@@ -137,8 +141,8 @@ footer a {
 
     <!-- CIVILITE -->
     <div class="civilite">
-      <label><input type="radio" name="civilite" value="Mr"> Mr</label>
-      <label><input type="radio" name="civilite" value="Mme"> Mme</label>
+      <button type="button" class="civ-btn" onclick="selectCiv(this, 'Mr')">Mr</button>
+      <button type="button" class="civ-btn" onclick="selectCiv(this, 'Mme')">Mme</button>
     </div>
 
     <input type="text" id="nom" placeholder="Nom">
@@ -186,13 +190,13 @@ function updateCountdown() {
     return;
   }
 
-  const jours = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const heures = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
-  const secondes = Math.floor((diff / 1000) % 60);
+  const j = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
 
   document.getElementById("countdown").innerHTML =
-    `⏳ Fin dans : ${jours}j ${heures}h ${minutes}m ${secondes}s`;
+    `⏳ Fin dans : ${j}j ${h}h ${m}m ${s}s`;
 }
 
 setInterval(updateCountdown, 1000);
@@ -203,11 +207,22 @@ function showForm() {
   document.getElementById("step2").classList.remove("hidden");
 }
 
+/* CIVILITE */
+let civilite = "";
+
+function selectCiv(el, value) {
+  civilite = value;
+
+  document.querySelectorAll(".civ-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  el.classList.add("active");
+}
+
 /* FORM */
 document.getElementById("contestForm").addEventListener("submit", function(e) {
   e.preventDefault();
-
-  const civilite = document.querySelector('input[name="civilite"]:checked');
 
   if (!civilite) {
     alert("Veuillez sélectionner Mr ou Mme");
@@ -218,7 +233,7 @@ document.getElementById("contestForm").addEventListener("submit", function(e) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      civilite: civilite.value,
+      civilite,
       nom: nom.value,
       prenom: prenom.value,
       email: email.value,
