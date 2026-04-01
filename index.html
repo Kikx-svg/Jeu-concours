@@ -16,8 +16,7 @@ body {
 /* CARD */
 .card {
   max-width: 420px;
-  margin: auto;
-  margin-top: 20px;
+  margin: 20px auto;
   background: rgba(255,255,255,0.08);
   backdrop-filter: blur(30px);
   border-radius: 25px;
@@ -43,7 +42,6 @@ input {
   transition: 0.2s;
 }
 
-/* FOCUS APPLE */
 input:focus {
   outline: none;
   box-shadow: 0 0 10px #38bdf8;
@@ -65,7 +63,6 @@ input:focus {
   transition: 0.2s;
 }
 
-/* CLICK ANIMATION */
 .btn:active {
   transform: scale(0.95);
 }
@@ -102,22 +99,19 @@ input:focus {
   color: #facc15;
 }
 
-/* PARTICIPANTS */
-.participants {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #e0f2fe;
-}
-
 /* FOOTER */
 footer {
   text-align: center;
   font-size: 12px;
   margin-top: 30px;
+  padding: 20px;
+  color: #dbeafe;
 }
 
 footer a {
-  color: white;
+  color: #e0f2fe;
+  text-decoration: underline;
+  margin: 0 5px;
 }
 
 .hidden {
@@ -136,7 +130,6 @@ footer a {
 
   <p>📅 Tirage le 30 avril 2026</p>
   <div id="countdown" class="timer"></div>
-  <div id="participants" class="participants"></div>
 
   <button class="btn" onclick="goForm()">Participer</button>
 </div>
@@ -169,21 +162,31 @@ footer a {
 <div id="step3" class="card hidden">
   <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
   <h2>🎉 Bravo !</h2>
-  <p>Participation enregistrée.</p>
+  <p>Votre participation a bien été enregistrée.</p>
+  <p>Les résultats vous seront communiqués prochainement.</p>
 </div>
 
+<!-- FOOTER -->
 <footer>
-  © 2026 – Jeu concours MacBook Neo •
+  © 2026 – Jeu concours MacBook Neo. Tous droits réservés •<br><br>
+  <a href="#">Politique de confidentialité</a> •
+  <a href="#">Conditions générales d'utilisation</a> •
   <a href="#">Mentions légales</a>
 </footer>
 
 <script>
 
-/* DATE */
+/* DATE FIXE */
 const target = new Date("2026-04-30T18:00:00");
 
+/* COMPTEUR */
 function countdown() {
   const diff = target - new Date();
+
+  if(diff <= 0){
+    document.getElementById("countdown").innerHTML = "⏳ Tirage en cours...";
+    return;
+  }
 
   const j = Math.floor(diff/86400000);
   const h = Math.floor((diff%86400000)/3600000);
@@ -193,16 +196,6 @@ function countdown() {
     `⏳ ${j}j ${h}h ${m}m`;
 }
 setInterval(countdown,1000);
-
-/* FAUX PARTICIPANTS */
-let count = Math.floor(Math.random()*50)+120;
-
-function updateParticipants(){
-  count += Math.floor(Math.random()*3);
-  document.getElementById("participants").innerHTML =
-    `👥 ${count} participants`;
-}
-setInterval(updateParticipants,2000);
 
 /* NAV */
 function goForm(){
@@ -233,7 +226,7 @@ document.getElementById("form").addEventListener("submit", e=>{
   e.preventDefault();
 
   if(!civ){
-    alert("Choisissez Mr ou Mme");
+    alert("Veuillez sélectionner Mr ou Mme");
     return;
   }
 
