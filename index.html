@@ -22,10 +22,11 @@ body {
 .card {
   max-width: 420px;
   margin: auto;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(25px);
+  border-radius: 25px;
   padding: 25px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
 /* IMAGE */
@@ -38,49 +39,66 @@ img.main {
 /* INPUT */
 input {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin: 10px 0;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
+  outline: none;
+  font-size: 15px;
 }
 
 /* BOUTON */
 .btn {
   background: linear-gradient(135deg, #06b6d4, #2563eb);
   border: none;
-  padding: 14px;
-  border-radius: 25px;
+  padding: 15px;
+  border-radius: 30px;
   color: white;
   font-weight: bold;
   width: 100%;
   margin-top: 20px;
+  font-size: 16px;
 }
 
-/* CIVILITE PROPRE */
+/* CIVILITE APPLE STYLE */
 .civilite {
   display: flex;
-  gap: 10px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 30px;
+  padding: 5px;
   margin: 20px 0;
 }
 
 .civilite button {
   flex: 1;
-  padding: 14px;
-  border-radius: 15px;
-  border: 2px solid rgba(255,255,255,0.4);
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
   background: transparent;
   color: white;
-  font-size: 16px;
+  font-weight: 500;
+  transition: 0.3s;
 }
 
 .civilite button.active {
-  background: linear-gradient(135deg, #06b6d4, #2563eb);
-  border: none;
+  background: white;
+  color: #1e3a8a;
+  box-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
 
 /* HIDDEN */
 .hidden {
   display: none;
+}
+
+.success {
+  font-size: 55px;
+  margin-bottom: 10px;
+}
+
+/* ERREUR */
+.error {
+  border: 2px solid red;
 }
 </style>
 
@@ -104,7 +122,7 @@ input {
 
   <form id="contestForm">
 
-    <!-- NOUVELLE CIVILITE -->
+    <!-- CIVILITE -->
     <div class="civilite">
       <button type="button" onclick="setCivilite(this, 'Mr')">Mr</button>
       <button type="button" onclick="setCivilite(this, 'Mme')">Mme</button>
@@ -112,8 +130,8 @@ input {
 
     <input type="text" id="nom" placeholder="Nom">
     <input type="text" id="prenom" placeholder="Prénom">
-    <input type="text" id="email" placeholder="Email">
-    <input type="text" id="telephone" placeholder="Téléphone">
+    <input type="email" id="email" placeholder="Email">
+    <input type="tel" id="telephone" placeholder="Téléphone">
     <input type="text" id="adresse" placeholder="Adresse postale complète">
 
     <button class="btn">Valider</button>
@@ -123,7 +141,8 @@ input {
 <!-- PAGE 3 -->
 <div id="step3" class="card hidden">
   <img class="main" src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
-  <h2>🎉 Bravo !</h2>
+  <div class="success">🎉</div>
+  <h2>Bravo !</h2>
   <p>Votre participation a bien été enregistrée.</p>
 </div>
 
@@ -132,6 +151,7 @@ input {
 <script>
 let civilite = "";
 
+/* CIVILITE */
 function setCivilite(el, value) {
   civilite = value;
 
@@ -142,18 +162,69 @@ function setCivilite(el, value) {
   el.classList.add("active");
 }
 
+/* NAV */
 function showForm() {
   document.getElementById("step1").classList.add("hidden");
   document.getElementById("step2").classList.remove("hidden");
 }
 
+/* VALIDATION */
 document.getElementById("contestForm").addEventListener("submit", function(e) {
   e.preventDefault();
 
+  const nom = document.getElementById("nom");
+  const prenom = document.getElementById("prenom");
+  const email = document.getElementById("email");
+  const telephone = document.getElementById("telephone");
+  const adresse = document.getElementById("adresse");
+
+  let valid = true;
+
+  // reset erreurs
+  [nom, prenom, email, telephone, adresse].forEach(f => f.classList.remove("error"));
+
+  // NOM / PRENOM lettres uniquement
+  const regexNom = /^[a-zA-ZÀ-ÿ\- ]+$/;
+  if (!regexNom.test(nom.value)) { nom.classList.add("error"); valid = false; }
+  if (!regexNom.test(prenom.value)) { prenom.classList.add("error"); valid = false; }
+
+  // EMAIL
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!regexEmail.test(email.value)) { email.classList.add("error"); valid = false; }
+
+  // TEL (chiffres uniquement)
+  const regexTel = /^[0-9]{8,15}$/;
+  if (!regexTel.test(telephone.value)) { telephone.classList.add("error"); valid = false; }
+
+  // ADRESSE (minimum longueur)
+  if (adresse.value.length < 5) { adresse.classList.add("error"); valid = false; }
+
+  // CIVILITE
   if (!civilite) {
-    alert("Sélectionnez Mr ou Mme");
+    alert("Veuillez sélectionner Mr ou Mme");
     return;
   }
+
+  if (!valid) {
+    alert("Veuillez vérifier vos informations");
+    return;
+  }
+
+  // ENVOI
+  fetch("https://formspree.io/f/xnjozjby", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      civilite,
+      nom: nom.value,
+      prenom: prenom.value,
+      email: email.value,
+      telephone: telephone.value,
+      adresse: adresse.value
+    })
+  });
 
   document.getElementById("step2").classList.add("hidden");
   document.getElementById("step3").classList.remove("hidden");
