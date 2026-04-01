@@ -34,17 +34,15 @@ img.main {
   margin-bottom: 20px;
 }
 
-/* DATE */
+/* DATE + TIMER */
 .date {
-  margin-top: 10px;
   font-size: 14px;
   color: #bae6fd;
 }
 
-/* TIMER */
 .timer {
   margin-top: 10px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   color: #facc15;
 }
@@ -56,10 +54,9 @@ input {
   margin: 10px 0;
   border-radius: 12px;
   border: none;
-  font-size: 15px;
 }
 
-/* BOUTON */
+/* BUTTON */
 .btn {
   background: linear-gradient(135deg, #06b6d4, #2563eb);
   border: none;
@@ -71,50 +68,24 @@ input {
   margin-top: 20px;
 }
 
-/* CIVILITE STYLE iOS */
+/* CIVILITE FIX MOBILE */
 .civilite {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 40px;
   margin: 20px 0;
 }
 
-.switch {
+.civilite label {
   display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 16px;
 }
 
-.switch input {
-  display: none;
-}
-
-.slider {
-  width: 40px;
-  height: 22px;
-  background: #ccc;
-  border-radius: 20px;
-  position: relative;
-}
-
-.slider::before {
-  content: "";
+.civilite input {
   width: 18px;
   height: 18px;
-  background: white;
-  border-radius: 50%;
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: 0.3s;
-}
-
-.switch input:checked + .slider {
-  background: #22c55e;
-}
-
-.switch input:checked + .slider::before {
-  transform: translateX(18px);
 }
 
 /* FOOTER */
@@ -135,10 +106,6 @@ footer a {
 .hidden {
   display: none;
 }
-
-.error {
-  border: 2px solid red;
-}
 </style>
 
 </head>
@@ -153,7 +120,7 @@ footer a {
   <h1>Gagnez le MacBook Neo</h1>
 
   <div class="date">
-    📅 Tirage le : <span id="dateTirage"></span>
+    📅 Tirage le : <strong>30 avril 2026</strong>
   </div>
 
   <div class="timer" id="countdown"></div>
@@ -170,17 +137,8 @@ footer a {
 
     <!-- CIVILITE -->
     <div class="civilite">
-      <label class="switch">
-        <input type="radio" name="civilite" value="Mr">
-        <span class="slider"></span>
-        Mr
-      </label>
-
-      <label class="switch">
-        <input type="radio" name="civilite" value="Mme">
-        <span class="slider"></span>
-        Mme
-      </label>
+      <label><input type="radio" name="civilite" value="Mr"> Mr</label>
+      <label><input type="radio" name="civilite" value="Mme"> Mme</label>
     </div>
 
     <input type="text" id="nom" placeholder="Nom">
@@ -207,7 +165,7 @@ footer a {
 
 <!-- FOOTER -->
 <footer>
-  © 2026 – Accès Wi-Fi invité. Tous droits réservés •<br>
+  © 2026 – Jeu concours MacBook Neo. Tous droits réservés •<br>
   <a href="#">Politique de confidentialité</a> •
   <a href="#">Conditions générales</a> •
   <a href="#">Mentions légales</a>
@@ -215,33 +173,31 @@ footer a {
 
 <script>
 
-/* DATE + TIMER */
-const targetDate = new Date();
-targetDate.setHours(targetDate.getHours() + 2);
+/* DATE FIXE */
+const targetDate = new Date("2026-04-30T18:00:00");
 
-document.getElementById("dateTirage").textContent =
-  targetDate.toLocaleDateString("fr-FR");
-
+/* COMPTEUR */
 function updateCountdown() {
   const now = new Date();
   const diff = targetDate - now;
 
   if (diff <= 0) {
-    document.getElementById("countdown").innerHTML = "⏳ Terminé";
+    document.getElementById("countdown").innerHTML = "⏳ Tirage en cours...";
     return;
   }
 
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
+  const jours = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const heures = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const secondes = Math.floor((diff / 1000) % 60);
 
   document.getElementById("countdown").innerHTML =
-    `⏳ Fin dans : ${h}h ${m}m ${s}s`;
+    `⏳ Fin dans : ${jours}j ${heures}h ${minutes}m ${secondes}s`;
 }
 
 setInterval(updateCountdown, 1000);
 
-/* NAVIGATION */
+/* NAV */
 function showForm() {
   document.getElementById("step1").classList.add("hidden");
   document.getElementById("step2").classList.remove("hidden");
@@ -252,13 +208,6 @@ document.getElementById("contestForm").addEventListener("submit", function(e) {
   e.preventDefault();
 
   const civilite = document.querySelector('input[name="civilite"]:checked');
-  const nom = document.getElementById("nom");
-  const prenom = document.getElementById("prenom");
-  const email = document.getElementById("email");
-  const telephone = document.getElementById("telephone");
-  const adresse = document.getElementById("adresse");
-  const cp = document.getElementById("cp");
-  const ville = document.getElementById("ville");
 
   if (!civilite) {
     alert("Veuillez sélectionner Mr ou Mme");
@@ -283,6 +232,7 @@ document.getElementById("contestForm").addEventListener("submit", function(e) {
   document.getElementById("step2").classList.add("hidden");
   document.getElementById("step3").classList.remove("hidden");
 });
+
 </script>
 
 </body>
