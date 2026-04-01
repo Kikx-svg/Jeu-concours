@@ -1,95 +1,109 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jeu concours - MacBook Neo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gagnez un MacBook Neo</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #000;
+  color: white;
+}
 
-    .card {
-      background: white;
-      max-width: 520px;
-      width: 90%;
-      border-radius: 18px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-      padding: 30px;
-      text-align: center;
-    }
+.container {
+  text-align: center;
+  padding: 40px 20px;
+}
 
-    h1, h2 {
-      margin-bottom: 10px;
-    }
+.hero img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+}
 
-    p {
-      color: #555;
-    }
+h1 {
+  font-size: 40px;
+  margin: 20px 0 10px;
+}
 
-    .btn {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 10px;
-      width: 100%;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 15px;
-    }
+p {
+  color: #aaa;
+}
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
+.btn {
+  background: white;
+  color: black;
+  padding: 14px 25px;
+  border-radius: 25px;
+  border: none;
+  font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
+}
 
-    .hidden {
-      display: none;
-    }
-  </style>
+.form-container {
+  display: none;
+  margin-top: 30px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+}
+
+.success {
+  display: none;
+  margin-top: 40px;
+}
+
+.card {
+  max-width: 400px;
+  margin: auto;
+}
+
+</style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="container">
 
   <!-- PAGE 1 -->
-  <div id="step1">
-    <h1>🎁 Gagnez le dernier MacBook Neo</h1>
-    <p>Participation gratuite pour tous les collaborateurs.</p>
+  <div id="step1" class="card">
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="MacBook">
+    </div>
+
+    <h1>Gagnez le nouveau MacBook</h1>
+    <p>Participez gratuitement pour tenter de remporter ce modèle dernière génération.</p>
 
     <button class="btn" onclick="showForm()">Participer</button>
   </div>
 
-  <!-- PAGE 2 -->
-  <div id="step2" class="hidden">
-    <h2>Formulaire de participation</h2>
+  <!-- FORM -->
+  <div id="step2" class="form-container card">
+    <h2>Inscription</h2>
 
-    <form id="contestForm" novalidate>
+    <form id="contestForm">
       <input type="text" id="nom" placeholder="Nom" required>
       <input type="text" id="prenom" placeholder="Prénom" required>
       <input type="text" id="email" placeholder="Email" required>
       <input type="text" id="telephone" placeholder="Téléphone" required>
 
-      <button type="submit" class="btn">Valider</button>
+      <button class="btn" type="submit">Valider</button>
     </form>
   </div>
 
-  <!-- PAGE 3 -->
-  <div id="step3" class="hidden">
-    <h2>✅ Bravo !</h2>
-    <p>Votre participation a bien été prise en compte.</p>
+  <!-- SUCCESS -->
+  <div id="step3" class="success card">
+    <h2>🎉 Bravo !</h2>
+    <p>Votre participation a bien été enregistrée.</p>
     <p>Les résultats vous seront communiqués prochainement.</p>
   </div>
 
@@ -97,8 +111,8 @@
 
 <script>
 function showForm() {
-  document.getElementById("step1").classList.add("hidden");
-  document.getElementById("step2").classList.remove("hidden");
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
 }
 
 document.getElementById("contestForm").addEventListener("submit", function(e) {
@@ -109,28 +123,21 @@ document.getElementById("contestForm").addEventListener("submit", function(e) {
   const email = document.getElementById("email").value.toLowerCase();
   const telephone = document.getElementById("telephone").value;
 
-  if (!nom || !prenom || !email || !telephone) {
-    alert("Veuillez remplir tous les champs");
-    return;
-  }
-
-  // ENVOI VERS FORMSPREE
   fetch("https://formspree.io/f/xnjozjby", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      nom: nom,
-      prenom: prenom,
-      email: email,
-      telephone: telephone
+      nom,
+      prenom,
+      email,
+      telephone
     })
   });
 
-  // PAGE FINALE
-  document.getElementById("step2").classList.add("hidden");
-  document.getElementById("step3").classList.remove("hidden");
+  document.getElementById("step2").style.display = "none";
+  document.getElementById("step3").style.display = "block";
 });
 </script>
 
