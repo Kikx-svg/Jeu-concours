@@ -3,50 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gagnez un MacBook Neo</title>
+<title>MacBook Neo</title>
 
 <style>
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #000;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
   color: white;
+  text-align: center;
 }
 
 .container {
-  text-align: center;
   padding: 40px 20px;
 }
 
-.hero img {
-  width: 100%;
-  max-width: 500px;
+.card {
+  max-width: 450px;
+  margin: auto;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
   border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+img {
+  width: 100%;
+  border-radius: 20px;
+  margin-bottom: 20px;
 }
 
 h1 {
-  font-size: 40px;
-  margin: 20px 0 10px;
+  font-size: 34px;
 }
 
 p {
-  color: #aaa;
+  color: #cbd5e1;
 }
 
 .btn {
-  background: white;
-  color: black;
-  padding: 14px 25px;
-  border-radius: 25px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
   border: none;
+  padding: 14px;
+  border-radius: 25px;
+  color: white;
   font-weight: bold;
-  margin-top: 20px;
   cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+  transition: 0.2s;
 }
 
-.form-container {
-  display: none;
-  margin-top: 30px;
+.btn:hover {
+  transform: scale(1.05);
 }
 
 input {
@@ -55,64 +65,63 @@ input {
   margin: 10px 0;
   border-radius: 10px;
   border: none;
+  outline: none;
+}
+
+.hidden {
+  display: none;
 }
 
 .success {
-  display: none;
-  margin-top: 40px;
+  font-size: 60px;
+  margin-bottom: 10px;
 }
-
-.card {
-  max-width: 400px;
-  margin: auto;
-}
-
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- PAGE 1 -->
-  <div id="step1" class="card">
-    <div class="hero">
-      <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="MacBook">
-    </div>
+<!-- PAGE 1 -->
+<div id="step1" class="card">
+  <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
+  <h1>Gagnez le nouveau MacBook</h1>
+  <p>Participez gratuitement pour tenter de remporter ce modèle dernière génération.</p>
+  <button class="btn" onclick="showForm()">Participer</button>
+</div>
 
-    <h1>Gagnez le nouveau MacBook</h1>
-    <p>Participez gratuitement pour tenter de remporter ce modèle dernière génération.</p>
+<!-- PAGE 2 -->
+<div id="step2" class="card hidden">
+  <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853">
+  <h2>Inscription</h2>
 
-    <button class="btn" onclick="showForm()">Participer</button>
-  </div>
+  <form id="contestForm">
+    <input type="text" id="nom" placeholder="Nom" required>
+    <input type="text" id="prenom" placeholder="Prénom" required>
+    <input type="text" id="email" placeholder="Email" required>
+    <input type="text" id="telephone" placeholder="Téléphone" required>
 
-  <!-- FORM -->
-  <div id="step2" class="form-container card">
-    <h2>Inscription</h2>
+    <button class="btn" type="submit">Valider</button>
+  </form>
+</div>
 
-    <form id="contestForm">
-      <input type="text" id="nom" placeholder="Nom" required>
-      <input type="text" id="prenom" placeholder="Prénom" required>
-      <input type="text" id="email" placeholder="Email" required>
-      <input type="text" id="telephone" placeholder="Téléphone" required>
-
-      <button class="btn" type="submit">Valider</button>
-    </form>
-  </div>
-
-  <!-- SUCCESS -->
-  <div id="step3" class="success card">
-    <h2>🎉 Bravo !</h2>
-    <p>Votre participation a bien été enregistrée.</p>
-    <p>Les résultats vous seront communiqués prochainement.</p>
-  </div>
+<!-- PAGE 3 -->
+<div id="step3" class="card hidden">
+  <img src="https://images.unsplash.com/photo-1605902711622-cfb43c4437d1">
+  <div class="success">🎉</div>
+  <h2>Bravo !</h2>
+  <p>Votre participation a bien été enregistrée.</p>
+  <p>Les résultats vous seront communiqués prochainement.</p>
+</div>
 
 </div>
 
 <script>
 function showForm() {
-  document.getElementById("step1").style.display = "none";
-  document.getElementById("step2").style.display = "block";
+  document.getElementById("step1").classList.add("hidden");
+  document.getElementById("step2").classList.remove("hidden");
 }
 
 document.getElementById("contestForm").addEventListener("submit", function(e) {
@@ -128,16 +137,11 @@ document.getElementById("contestForm").addEventListener("submit", function(e) {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      nom,
-      prenom,
-      email,
-      telephone
-    })
+    body: JSON.stringify({ nom, prenom, email, telephone })
   });
 
-  document.getElementById("step2").style.display = "none";
-  document.getElementById("step3").style.display = "block";
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
 });
 </script>
 
